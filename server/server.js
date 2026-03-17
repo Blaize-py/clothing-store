@@ -50,6 +50,7 @@ const uploadPayment = multer({ storage: paymentStorage });
 const uploadProduct = multer({ storage: productStorage });
 
 // ── Middleware ───────────────────────────────────────────────
+app.set('trust proxy', 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
@@ -59,7 +60,10 @@ app.use(session({
   secret: 'my-super-secret-key-change-this',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }));
 
 
